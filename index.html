@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RotaFrete | CEP e estimativa de entrega</title>
+  <meta name="description" content="Consulte seu CEP, calcule a distância da UNINASSAU e veja uma estimativa de frete por moto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a href="#inicio" class="brand"><span class="brand-icon">↗</span> Rota<span>Frete</span></a>
+      <nav><a href="#como-funciona">Como funciona</a><a href="#consulta">Consultar frete</a></nav>
+      <a href="#consulta" class="nav-button">Calcular agora <span>→</span></a>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow"><i></i> CONSULTA RÁPIDA DE CEP</span>
+          <h1>Descubra a distância.<br><span>Estime seu frete.</span></h1>
+          <p>Informe o CEP de destino para consultar o endereço, calcular a distância por rota e estimar um valor de entrega baseado em uma tarifa configurável por quilômetro.</p>
+          <a href="#consulta" class="primary-button">Consultar meu CEP <span>↘</span></a>
+          <div class="hero-note"><span>✓</span> Consulta de CEP e rota com APIs públicas</div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-circle circle-a"></div><div class="art-circle circle-b"></div>
+          <div class="route-line"><span class="route-point start"></span><span class="route-point end"></span></div>
+          <div class="location-card"><span class="pin">⌖</span><div><strong>UNINASSAU</strong><small>Ponto de partida</small></div><span class="mini-check">✓</span></div>
+          <div class="distance-card"><span class="distance-icon">↗</span><div><strong>CEP + ROTA</strong><small>Estimativa de distância</small></div></div>
+          <div class="moto-illustration">🏍️</div>
+          <div class="delivery-chip"><span>●</span> Simulação de frete</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="steps" id="como-funciona">
+      <div class="container steps-grid">
+        <article><span class="step-number">01</span><div><h3>Informe o CEP</h3><p>Buscamos o endereço usando a API ViaCEP.</p></div></article>
+        <article><span class="step-number">02</span><div><h3>Calculamos a rota</h3><p>Estimamos a distância rodoviária entre os pontos.</p></div></article>
+        <article><span class="step-number">03</span><div><h3>Veja o valor estimado</h3><p>O cálculo usa uma tarifa de exemplo editável.</p></div></article>
+      </div>
+    </section>
+
+    <section class="calculator-section" id="consulta">
+      <div class="container calculator-layout">
+        <div class="section-intro">
+          <span class="eyebrow"><i></i> CALCULADORA DE FRETE</span>
+          <h2>Quanto custa chegar até você?</h2>
+          <p>Preencha os dados para calcular uma estimativa. A consulta usa o CEP para localizar uma região, então o resultado pode ser aproximado.</p>
+          <div class="notice"><span>ⓘ</span><p><strong>Importante:</strong> este cálculo não é uma cotação oficial da Uber Moto. O preço real pode variar conforme demanda, horário, disponibilidade e regras do serviço.</p></div>
+          <div class="api-list">
+            <div><span class="api-check">✓</span><span><strong>ViaCEP</strong><small>Busca de endereço pelo CEP</small></span><a href="https://viacep.com.br/" target="_blank" rel="noopener">API ↗</a></div>
+            <div><span class="api-check">✓</span><span><strong>OpenStreetMap / OSRM</strong><small>Geocodificação e cálculo de rota</small></span><a href="https://project-osrm.org/docs/" target="_blank" rel="noopener">API ↗</a></div>
+          </div>
+        </div>
+
+        <div class="calculator-card">
+          <div class="card-heading"><div class="heading-icon">⌖</div><div><h3>Calcular minha entrega</h3><p>Os campos com * são obrigatórios.</p></div></div>
+          <form id="freightForm">
+            <label for="cep">CEP de destino *</label>
+            <div class="cep-row"><input id="cep" name="cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000" required><button id="lookupButton" type="button" class="lookup-button">Buscar CEP</button></div>
+            <div id="cepStatus" class="field-status" aria-live="polite"></div>
+
+            <div class="address-box" id="addressBox" hidden>
+              <div class="address-icon">✓</div><div><strong id="addressTitle">Endereço encontrado</strong><p id="addressDetails"></p></div>
+            </div>
+
+            <label for="origin">Ponto de partida *</label>
+            <input id="origin" name="origin" value="UNINASSAU, Fortaleza, CE, Brasil" required>
+            <small class="input-help">Confirme o campus/endereço da UNINASSAU antes de calcular.</small>
+
+            <div class="config-grid">
+              <div><label for="baseFare">Tarifa base (R$)</label><input id="baseFare" type="number" min="0" step="0.50" value="4.00"></div>
+              <div><label for="perKm">Valor por km (R$)</label><input id="perKm" type="number" min="0" step="0.10" value="1.80"></div>
+            </div>
+            <p class="input-help">Valores de demonstração: ajuste para a regra de preço que você deseja simular.</p>
+            <button id="calculateButton" class="primary-button full-button" type="submit">Calcular distância e frete <span>→</span></button>
+            <div id="formStatus" class="form-status" aria-live="polite"></div>
+          </form>
+
+          <section id="resultCard" class="result-card" hidden aria-live="polite">
+            <div class="result-top"><span>ESTIMATIVA DE FRETE</span><span class="result-badge">Simulação</span></div>
+            <div class="result-price" id="resultPrice">R$ 0,00</div>
+            <div class="result-metrics"><div><small>Distância estimada</small><strong id="resultDistance">—</strong></div><div><small>Tempo de carro estimado</small><strong id="resultDuration">—</strong></div></div>
+            <div class="formula" id="resultFormula"></div>
+            <a id="mapLink" class="map-link" href="#" target="_blank" rel="noopener">Ver rota no mapa ↗</a>
+            <p class="result-disclaimer">A distância usa rota para carro como aproximação; o trajeto e a tarifa de uma moto podem ser diferentes. CEPs geralmente apontam para uma área, não para o portão exato.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="container footer-content"><a href="#inicio" class="brand"><span class="brand-icon">↗</span> Rota<span>Frete</span></a><p>Estimativas para planejamento. Não representa a Uber nem a UNINASSAU.</p><span>© <span id="year"></span> RotaFrete</span></div><div class="container attribution">Geocodificação e mapas: © OpenStreetMap contributors. Consulte as políticas de uso das APIs antes de publicar o projeto.</div></footer>
+</body>
+</html>
